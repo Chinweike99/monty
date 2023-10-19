@@ -7,73 +7,80 @@
  */
 void _pstr(stack_t **stack, unsigned int line_number)
 {
-	stack_t *tmp = *stack;
-	int c = 0;
+	int x = 0;
+	stack_t *temp = *stack;
 
 	(void)line_number;
 
-
-	while (tmp)
+	while (temp)
 	{
-		c = tmp->n;
-		if (c == 0 || _isalpha(c) == 0)
+		x = (*temp).n;
+		if (x == 0 || _isalphabet(x) == 0)
 			break;
-		putchar(c);
-		tmp = tmp->next;
+		putchar(x);
+		temp = (*temp).next;
 	}
 	putchar('\n');
 }
 
 /**
- * _rotl - mod top of stack y second top stack
- * @stack: pointer to lists for monty stack
+ * rot_l - Function to mod top of stack y second top stack
+ * @stack: The pointer to lists for monty stack
  * @line_number: number of line opcode occurs on
  */
-void _rotl(stack_t **stack, unsigned int line_number)
+void rot_l(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner = *stack;
-
-
-	int aux1 = 0;
+	stack_t *tracker = *stack;
+	int aux = 0;
 
 	if (!line_number || !stack || !*stack || !(*stack)->next)
 		return;
 
-	aux1 = runner->n;
+	aux = (*tracker).n;
 
-	while (runner->next)
+	while ((*tracker).next)
 	{
-		runner = runner->next;
-		runner->prev->n = runner->n;
+		tracker = (*tracker).next;
+		tracker->prev->n = (*tracker).n;
 	}
 
-	runner->n = aux1;
+	(*tracker).n = aux;
 }
 
 /**
- * _rotr - mod top of stack y second top stacks
- * @stack: pointer to lists for monty stack
+ * rot_r - mod top of stack y second top stacks
+ * @stack: The  pointer to lists for monty stack
  * @line_number: number of line opcode occurs on
  */
-void _rotr(stack_t **stack, unsigned int line_number)
+void rot_r(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner = *stack;
+	stack_t *tracker = *stack;
 
 	int aux1 = 0;
 
 	if (!line_number || !stack || !*stack || !(*stack)->next)
 		return;
 
-	while (runner->next)
-		runner = runner->next;
+	while (tracker->next)
+		tracker = tracker->next;
 
-	aux1 = runner->n;
-
-	while (runner->prev)
+	aux1 = tracker->n;
+	while (tracker->prev)
 	{
-		runner = runner->prev;
-		runner->next->n = runner->n;
+		tracker = tracker->prev;
+		tracker->next->n = tracker->n;
 	}
 
-	runner->n = aux1;
+	tracker->n = aux1;
+}
+
+/**
+ * _nop - nop top of stack y second top stack
+ * @stack: pointer to lists for monty stack
+ * @line_number: number of line opcode occurs on
+ */
+void _nop(__attribute__ ((unused))stack_t **stack,
+		                __attribute__ ((unused)) unsigned int line_number)
+{
+	;
 }

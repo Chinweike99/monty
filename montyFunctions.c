@@ -1,44 +1,42 @@
 #define _GNU_SOURCE
 #include "monty.h"
 /**
- * read_file - reads a bytecode file and runs commands
- * @filename: pathname to file
- * @stack: pointer to the top of the stack
+ * fileRead - Function that reads a bytecode file and runs commands
+ * @filename: pathname of file
+ * @stack: The pointer to the top of the stack
  */
-void read_file(char *filename, stack_t **stack)
+void fileRead(char *filename, stack_t **stack)
 {
-	char *line;
-	size_t i = 0;
-	int line_count = 1;
-	instruct_func s;
-	int check;
+	char *queue;
+	size_t x = 0;
 	int read;
-
+	int queueCount = 1;
+	instruct_func k;
+	int check;
 
 	var_global.file = fopen(filename, "r");
-
 	if (var_global.file == NULL)
 	{
 		fprintf(stderr, "Error: Can't open file %s\n", filename);
 		exit(EXIT_FAILURE);
 	}
 
-	while ((read = getline(&var_global.buffer, &i, var_global.file)) != -1)
+	while ((read = getline(&var_global.buffer, &x, var_global.file)) != -1)
 	{
-		line = parse_line(var_global.buffer, stack, line_count);
-		if (line == NULL || line[0] == '#')
+		queue = parseLine(var_global.buffer, stack, queueCount);
+		if (queue == NULL || queue[0] == '#')
 		{
-			line_count++;
+			queueCount++;
 			continue;
 		}
-		s = get_op_func(line);
-		if (s == NULL)
+		k = get_op_func(queue);
+		if (k == NULL)
 		{
-			fprintf(stderr, "L%d: unknown instruction %s\n", line_count, line);
+			fprintf(stderr, "L%d: unknown instruction %s\n", queueCount, queue);
 			exit(EXIT_FAILURE);
 		}
-		s(stack, line_count);
-		line_count++;
+		k(stack, queueCount);
+		queueCount++;
 	}
 	free(var_global.buffer);
 	check = fclose(var_global.file);
@@ -48,96 +46,63 @@ void read_file(char *filename, stack_t **stack)
 
 /**
  * get_op_func -  checks opcode and returns the correct function
- * @str: the opcode
+ * @ptr: the opcode
  * Return: returns a functions, or NULL on failure
  */
-instruct_func get_op_func(char *str)
+instruct_func get_op_func(char *ptr)
 {
-	int i;
+	int x;
 
 	instruction_t instruct[] = {
-		{"push", _push},
-		{"pall", _pall},
-		{"pint", _pint},
-		{"pop", _pop},
-		{"swap", _swap},
-		{"add", _add},
+		{"push", pushTo},
+		{"pall", print_all},
+		{"pint", print_int},
+		{"pop", _delete},
+		{"swap", _switch},
+		{"add", _plus},
 		{"nop", _nop},
-		{"sub", _sub},
-		{"mul", _mul},
+		{"sub", _subtract},
+		{"mul", _multiply},
 		{"div", _div},
-		{"mod", _mod},
+		{"mod", _modul},
 		{"pchar", _pchar},
 		{"pstr", _pstr},
-		{"rotl", _rotl},
-		{"rotr", _rotr},
+		{"rotl", rot_l},
+		{"rotr", rot_r},
 		{NULL, NULL},
 	};
 
-	i = 0;
-	while (instruct[i].f != NULL && strcmp(instruct[i].opcode, str) != 0)
+	x = 0;
+	while (instruct[x].f != NULL && strcmp(instruct[x].opcode, ptr) != 0)
 	{
-		i++;
+		x++;
 	}
 
-	return (instruct[i].f);
+	return (instruct[x].f);
 }
 
 /**
- * isnumber - checks if a string is a number
+ * _number - Function that checks if a string is a number
  * @str: string being passed
  * Return: returns 1 if string is a number, 0 otherwise
  */
-int isnumber(char *str)
+int _number(char *str)
 {
-	unsigned int i;
+	unsigned int x;
 
 	if (str == NULL)
 		return (0);
-	i = 0;
-	while (str[i])
+	x = 0;
+	while (str[x])
 	{
 		if (str[0] == '-')
 		{
-			i++;
+			x++;
 			continue;
 		}
-		if (!isdigit(str[i]))
+		if (!isdigit(str[x]))
 			return (0);
-		i++;
+		x++;
 	}
 	return (1);
-}
-
-/**
- * parse_line - parses a line for an opcode and arguments
- * @line: the line to be parsed
- * @stack: pointer to the head of the stack
- * @line_number: the current line number
- * Return: returns the opcode or null on failure
- */
-char *parse_line(char *line, stack_t **stack, unsigned int line_number)
-{
-	char *op_code, *push, *arg;
-	(void)stack;
-
-	push = "push";
-	op_code = strtok(line, "\n ");
-	if (op_code == NULL)
-		return (NULL);
-
-	if (strcmp(op_code, push) == 0)
-	{
-		arg = strtok(NULL, "\n ");
-		if (isnumber(arg) == 1 && arg != NULL)
-		{
-			var_global.push_arg = atoi(arg);
-		}
-		else
-		{
-			fprintf(stderr, "L%d: usage: push integer\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-	}
-	return (op_code);
 }

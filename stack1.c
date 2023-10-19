@@ -1,10 +1,10 @@
 #include "monty.h"
 /**
- * _push - push int to a stack
- * @stack: linked lists for monty stack
- * @line_number: number of line opcode occurs on
+ * pushTo - Function to push int to a stack
+ * @stack: The linked lists for monty stack
+ * @line_number: The number of line opcode occurs on
  */
-void _push(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
+void pushTo(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
 {
 	stack_t *top;
 	(void)line_number;
@@ -16,84 +16,84 @@ void _push(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
 		exit(EXIT_FAILURE);
 	}
 
-	top->n = var_global.push_arg;
-	top->next = *stack;
-	top->prev = NULL;
+	(*top).n = var_global.push_arg;
+	(*top).next = *stack;
+	(*top).prev = NULL;
 	if (*stack != NULL)
 		(*stack)->prev = top;
 	*stack = top;
 }
 
 /**
- * _pall - print all function
+ * print_all - Function to print all function
  * @stack: pointer to linked list stack
  * @line_number: number of line opcode occurs on
  */
-void _pall(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
+void print_all(stack_t **stack, __attribute__ ((unused))unsigned int line_number)
 {
-	stack_t *runner;
+	stack_t *tracker;
 
-	runner = *stack;
-	while (runner != NULL)
+	tracker = *stack;
+	while (tracker != NULL)
 	{
-		printf("%d\n", runner->n);
-		runner = runner->next;
+		printf("%d\n", (*tracker).n);
+		tracker = (*tracker).next;
 	}
 }
 
 /**
- * _pint - print int a top of stack
- * @stack: pointer to linked list stack
+ * print_int - Function to print int a top of stack
+ * @stack: The pointer to linked list stack
  * @line_number: number of line opcode occurs on
  *
  */
-void _pint(stack_t **stack, unsigned int line_number)
+void print_int(stack_t **stack, unsigned int line_number)
 {
-	stack_t *runner;
+	stack_t *tracker;
 
-	runner = *stack;
-	if (runner == NULL)
+	tracker = *stack;
+	if (tracker == NULL)
 	{
 		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	printf("%d\n", runner->n);
+	printf("%d\n", (*tracker).n);
 }
 
 /**
- * _pop - remove element a list
- *@stack: pointer to first node
- *@line_number: integer
- *Return: void
+ * _delete - Function to remove element a list
+ *@stack: The pointer to first node
+ *@line_number: the integer
+ *Return: Return void
  */
-void _pop(stack_t **stack, unsigned int line_number)
+void _delete(stack_t **stack, unsigned int line_number)
 {
-	stack_t *nodo = *stack;
+	stack_t *newnode = *stack;
 
 	if (stack == NULL || *stack == NULL)
 	{
 		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	*stack = nodo->next;
+	*stack = (*newnode).next;
 	if (*stack != NULL)
 		(*stack)->prev = NULL;
-	free(nodo);
+	free(newnode);
 }
 
 /**
- * free_dlistint - free a list
- * @head: pointer to first node
+ * freeDlistint - Function to free a list
+ * @head: head pointer to first node
  *
  */
-void free_dlistint(stack_t *head)
+void freeDlistint(stack_t *head)
 {
-	stack_t *tmp;
+	stack_t *temp;
 
 	while (head != NULL)
 	{
-		tmp = head->next;
+		temp = (*head).next;
 		free(head);
-		head = tmp;
+		head = temp;
 	}
 }
