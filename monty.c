@@ -6,9 +6,8 @@ global_var var_global;
  * @av: opcode file
  * Return: 0
  */
-int main()
+int main(int ac, char **av)
 {
-	int ac = 0;
 	stack_t *stack;
 
 	stack = NULL;
@@ -17,9 +16,7 @@ int main()
 		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-
-	/*read_file(av[1], &stack);*/
-    /* recordar liberar memorias */
+	read_file(av[1], &stack);
 	free_dlistint(stack);
 	return (0);
 }
